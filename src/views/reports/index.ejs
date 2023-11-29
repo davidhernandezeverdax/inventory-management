@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sales Reports</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h1>Sales Reports</h1>
+    <form id="reportForm">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required>
+
+        <button type="submit">Generate Report</button>
+    </form>
+
+    <div>
+        <canvas id="salesChart"></canvas>
+    </div>
+
+    <a href="/">Back to Dashboard</a>
+
+    <script>
+        document.getElementById('reportForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            fetch('/api/orders/report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ startDate, endDate })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('salesChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Total Sales'],
+                            datasets: [{
+                                label: 'Sales',
+                                data: [parseFloat(data.totalSales)],
+                                backgroundColor: ['rgba(54, 162, 235, 0.2)'],
+                                borderColor: ['rgba(54, 162, 235, 1)'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+
+</html>

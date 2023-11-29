@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Customers List</title>
+</head>
+<body>
+  <h1>Customers List</h1>
+  <a href="/customers/form">Add New Customer</a>
+  <ul>
+    <% customers.forEach(function(customer) { %>
+      <li>
+        <%= customer.name %> - <%= customer.email %>
+        <a href="/customers/form?customerId=<%= customer._id %>">Edit</a>
+      </li>
+    <% }); %>
+  </ul>
+  <a href="/">Back to Dashboard</a>
+</body>
+</html>

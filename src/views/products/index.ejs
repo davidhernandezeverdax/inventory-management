@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Products List</title>
+</head>
+<body>
+  <h1>Products List</h1>
+  <a href="/products/form">Add New Product</a>
+  <ul>
+    <% products.forEach(function(product) { %>
+      <li>
+        <%= product.name %> - $<%= product.price %>
+        <a href="/products/form?productId=<%= product._id %>">Edit</a>
+      </li>
+    <% }); %>
+  </ul>
+  <a href="/">Back to Dashboard</a>
+</body>
+</html>

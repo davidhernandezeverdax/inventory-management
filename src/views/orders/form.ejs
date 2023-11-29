@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= order ? 'Edit' : 'Create' %> Order</title>
+</head>
+<body>
+  <h1><%= order ? 'Edit' : 'Create' %> Order</h1>
+  <form method="post" action="/api/orders<%= order ? '/' + order._id : '' %>" onsubmit="handleSubmit(event)">
+    <label for="customer">Select Customer:</label>
+    <select name="customer" id="customer">
+      <% customers.forEach(function(customer) { %>
+        <option value="<%= customer._id %>" <%= order && order.customer._id === customer._id ? 'selected' : '' %>><%= customer.name %></option>
+      <% }); %>
+    </select>
+    
+
+    <h2>Add Products to Order</h2>
+    <% products.forEach(function(product, index) { %>
+      <div>
+        <label for="product-<%= index %>"><%= product.name %>:</label>
+        <% 
+        let productInOrder = order && order.products.find(p => p.productId === product._id);
+        let quantity = productInOrder ? productInOrder.quantity : '';
+        %>
+        <input type="checkbox" id="product-<%= index %>" name="products" value="<%= product._id %>" <%= productInOrder ? 'checked' : '' %>>
+        <label for="quantity-<%= index %>">Quantity:</label>
+        <input type="number" id="quantity-<%= index %>" name="quantity-<%= product._id %>" min="1" value="<%= quantity %>">
+      </div>
+    <% }); %>
+    
+
+    <button type="submit">Submit Order</button>
+  </form>
+  
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const form = event.target;
+      const action = form.action;
+  
+      const selectedProducts = Array.from(form.products)
+        .filter(input => input.checked)
+        .map(input => ({
+          productId: input.value,
+          quantity: parseInt(form['quantity-' + input.value].value, 10)
+        }));
+  
+      fetch(action, {
+        method: `<%= order ? 'PUT' : 'POST' %>`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer: form.customer.value,
+          products: selectedProducts,
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        window.location.href = '/orders';
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+</body>
+</html>

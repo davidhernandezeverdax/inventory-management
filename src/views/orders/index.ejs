@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Orders List</title>
+</head>
+<body>
+  <h1>Orders List</h1>
+  <a href="/orders/form">Create New Order</a>
+  <ul>
+    <% orders.forEach(function(order) { %>
+      <li>
+        Order ID: <%= order._id %> - Customer: <%= order.customer.name %>
+        <a href="/orders/form?orderId=<%= order._id %>">Edit</a>
+      </li>
+    <% }); %>
+  </ul>
+  <a href="/">Back to Dashboard</a>
+</body>
+</html>

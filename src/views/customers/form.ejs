@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= customer ? 'Edit' : 'Create' %> Customer</title>
+</head>
+<body>
+  <h1><%= customer ? 'Edit' : 'Create' %> Customer</h1>
+  <form method="post" action="/api/customers<%= customer ? '/' + customer._id : '' %>" onsubmit="handleSubmit(event)">
+    <input type="text" name="name" value="<%= customer ? customer.name : '' %>" placeholder="Name">
+    <input type="email" name="email" value="<%= customer ? customer.email : '' %>" placeholder="Email">
+    <button type="submit">Submit</button>
+    </form>
+  
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const form = event.target;
+      const action = form.action;
+  
+      fetch(action, {
+        method: `<%= customer ? 'PUT' : 'POST' %>`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name.value,
+          email: form.email.value,
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        window.location.href = '/customers';
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+  
+</body>
+</html>
+

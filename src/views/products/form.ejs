@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= product ? 'Edit' : 'Create' %> Product</title>
+</head>
+<body>
+  <h1><%= product ? 'Edit' : 'Create' %> Product</h1>
+  <form method="post" action="/api/products<%= product ? '/' + product._id : '' %>" onsubmit="handleSubmit(event)">
+    <input type="text" name="name" value="<%= product ? product.name : '' %>" placeholder="Name">
+    <input type="number" step="any" name="price" value="<%= product ? product.price : '' %>" placeholder="Price">
+    <input type="number" step="any" name="stock" value="<%= product ? product.stock : '' %>" placeholder="Stock">
+    <button type="submit">Submit</button>
+  </form>
+  
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const form = event.target;
+      const action = form.action;
+  
+      fetch(action, {
+        method: `<%= product ? 'PUT' : 'POST' %>`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name.value,
+          price: parseFloat(form.price.value),
+          stock: parseFloat(form.stock.value),
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        window.location.href = '/products';
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+  
+</body>
+</html>
